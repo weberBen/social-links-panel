@@ -1,0 +1,16 @@
+{
+  "name": "social-links-panel",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./styles": "./src/styles.css"
+  },
+  "files": ["src/"],
+  "keywords": ["social", "links", "panel", "readme", "markdown", "web-component"],
+  "license": "MIT",
+  "dependencies": {
+    "lenis": "^1.3.23"
+  }
+}

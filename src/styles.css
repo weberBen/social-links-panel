@@ -1,0 +1,206 @@
+/* social-links-panel — self-contained styles */
+/* All variables prefixed with --slp- to avoid collisions */
+
+.slp-root {
+  --slp-bg: var(--bg-1, #0a0e17);
+  --slp-text: var(--t2, #c8d6e5);
+  --slp-text-muted: var(--t3, #7a97b0);
+  --slp-heading: var(--t1, #e4eef6);
+  --slp-link: var(--cyan, #38bdf8);
+  --slp-border: var(--border-6, rgba(255,255,255,0.06));
+  --slp-code-bg: var(--surface-3, rgba(255,255,255,0.03));
+  --slp-icon-size: 20px;
+  --slp-max-width: 800px;
+  --slp-radius: 16px;
+
+  font-family: inherit;
+  color: var(--slp-text);
+  max-width: var(--slp-max-width);
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+}
+
+/* ===== Social links bar ===== */
+.slp-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.slp-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 28px;
+  background: var(--slp-code-bg);
+  border: 1px solid var(--slp-border);
+  color: var(--slp-text);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.slp-link:hover {
+  color: var(--slp-link);
+  border-color: var(--slp-link);
+  transform: translateY(-1px);
+}
+
+.slp-link svg {
+  width: var(--slp-icon-size);
+  height: var(--slp-icon-size);
+  flex-shrink: 0;
+}
+
+/* ===== README content ===== */
+.slp-readme {
+  background: var(--slp-code-bg);
+  border: 1px solid var(--slp-border);
+  border-radius: var(--slp-radius);
+  padding: 32px;
+  line-height: 1.7;
+  font-size: 15px;
+  overflow-x: auto;
+}
+
+.slp-readme h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--slp-heading);
+  margin: 32px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--slp-border);
+}
+.slp-readme h1:first-child { margin-top: 0; }
+
+.slp-readme h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--slp-heading);
+  margin: 28px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--slp-border);
+}
+
+.slp-readme h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--slp-heading);
+  margin: 24px 0 10px;
+}
+
+.slp-readme h4, .slp-readme h5, .slp-readme h6 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--slp-heading);
+  margin: 20px 0 8px;
+}
+
+.slp-readme p {
+  margin: 12px 0;
+}
+
+.slp-readme a {
+  color: var(--slp-link);
+  text-decoration: none;
+}
+.slp-readme a:hover {
+  text-decoration: underline;
+}
+
+.slp-readme code {
+  background: var(--slp-code-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+.slp-readme pre {
+  background: var(--slp-code-bg);
+  border: 1px solid var(--slp-border);
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+
+.slp-readme pre code {
+  background: none;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.slp-readme ul, .slp-readme ol {
+  padding-left: 24px;
+  margin: 12px 0;
+}
+
+.slp-readme li {
+  margin: 4px 0;
+}
+
+.slp-readme blockquote {
+  border-left: 3px solid var(--slp-link);
+  padding: 8px 16px;
+  margin: 16px 0;
+  color: var(--slp-text-muted);
+  font-style: italic;
+}
+
+.slp-readme hr {
+  border: none;
+  border-top: 1px solid var(--slp-border);
+  margin: 24px 0;
+}
+
+.slp-readme table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+.slp-readme th, .slp-readme td {
+  padding: 8px 12px;
+  border: 1px solid var(--slp-border);
+  text-align: left;
+}
+
+.slp-readme th {
+  font-weight: 600;
+  color: var(--slp-heading);
+}
+
+.slp-readme img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+/* ===== Loading state ===== */
+.slp-loading {
+  text-align: center;
+  color: var(--slp-text-muted);
+  padding: 32px;
+  font-size: 14px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .slp-root {
+    padding: 32px 16px 48px;
+  }
+  .slp-readme {
+    padding: 20px;
+  }
+  .slp-readme h1 { font-size: 22px; }
+  .slp-readme h2 { font-size: 18px; }
+  .slp-links { gap: 8px; }
+  .slp-link { padding: 8px 14px; font-size: 13px; }
+}
