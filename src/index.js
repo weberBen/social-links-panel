@@ -195,11 +195,15 @@ const CSS = `
 }
 .slp-modal-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--slp-modal-border, rgba(0,0,0,0.1));
+  padding: 16px 24px 0;
   flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  background: var(--slp-modal-bg, #ffffff);
+  padding-bottom: 20px;
 }
 .slp-modal-title {
   font-size: 16px;
@@ -290,6 +294,21 @@ const CSS = `
 .slp-modal-body .slp-link { color: var(--slp-modal-text, #1e293b); border-color: var(--slp-modal-border, rgba(0,0,0,0.1)); background: var(--slp-modal-code-bg, #f1f5f9); }
 .slp-modal-body .slp-link:hover { color: var(--slp-modal-link, #0284c7); border-color: var(--slp-modal-link, #0284c7); }
 .slp-modal-body .slp-link svg { width: 20px; height: 20px; }
+.slp-modal-header .slp-links {
+  width: 100%;
+  order: 3;
+  padding: 16px 0 20px;
+  margin: 0;
+  display: flex;
+  position: relative;
+  overflow: visible;
+  justify-content: center;
+  gap: 12px;
+  background: var(--slp-modal-bg, #ffffff);
+}
+.slp-modal-header .slp-link { color: var(--slp-modal-text, #1e293b); border-color: var(--slp-modal-border, rgba(0,0,0,0.1)); background: var(--slp-modal-code-bg, #f1f5f9); }
+.slp-modal-header .slp-link:hover { color: var(--slp-modal-link, #0284c7); border-color: var(--slp-modal-link, #0284c7); }
+.slp-modal-header .slp-link svg { width: 20px; height: 20px; }
 @media (max-width: 768px) {
   .slp-root { padding: 32px 16px 48px; }
   .slp-readme { padding: 20px; }
@@ -369,7 +388,7 @@ function initWaveLine(container) {
 
     const isLight = document.documentElement.classList.contains('light-theme');
     ctx.strokeStyle = isLight ? 'rgba(2,132,199,0.5)' : 'rgba(255,255,255,0.6)';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = isLight ? 5 : 3;
     ctx.stroke();
   }
   draw();
@@ -469,12 +488,12 @@ export function createSocialPanel(config = {}) {
       <div class="slp-modal">
         <div class="slp-modal-header">
           <span class="slp-modal-title">${readme?.label || 'INFO : README'}</span>
+          ${buildLinksHTML()}
           <div class="slp-modal-actions">
             <button class="slp-modal-close">&times;</button>
           </div>
         </div>
         <div class="slp-modal-body" style="position:relative">
-          ${buildLinksHTML()}
           <div style="position:relative">
             <button class="slp-modal-copy" title="Copy markdown" style="top:32px;right:32px">
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
