@@ -249,17 +249,29 @@ const CSS = `
   color: var(--slp-modal-heading, #0f172a);
   background: rgba(0,0,0,0.05);
 }
+.slp-readme-wrap {
+  position: relative;
+}
+.slp-readme-wrap .slp-readme h1:first-child {
+  padding-right: 36px;
+}
 .slp-modal-copy {
   background: none;
   border: none;
   color: var(--slp-modal-muted, #94a3b8);
   cursor: pointer;
-  padding: 6px;
+  padding: 4px;
   border-radius: 6px;
   transition: all 0.15s;
   display: inline-flex;
   align-items: center;
+  line-height: 1;
   position: absolute;
+  top: 32px;
+  right: 32px;
+}
+@media (max-width: 768px) {
+  .slp-modal-copy { top: 20px; right: 20px; }
 }
 .slp-modal-copy:hover {
   color: var(--slp-modal-heading, #0f172a);
@@ -479,6 +491,18 @@ export function createSocialPanel(config = {}) {
     return `<div class="slp-links">${items}</div>`;
   }
 
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;opacity:0;left:-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (_) {}
+    document.body.removeChild(ta);
+    return ok;
+  }
+
   function buildModal() {
     overlay = document.createElement('div');
     overlay.className = 'slp-modal-overlay';
@@ -508,12 +532,12 @@ export function createSocialPanel(config = {}) {
             <button class="slp-modal-close">&times;</button>
           </div>
         </div>
-        <div class="slp-modal-body" style="position:relative">
-          <div style="position:relative">
-            <button class="slp-modal-copy" title="Copy markdown" style="top:32px;right:32px">
+        <div class="slp-modal-body">
+          <div class="slp-readme-wrap">
+            <div class="slp-readme slp-loading">Loading...</div>
+            <button class="slp-modal-copy" title="Copy markdown">
               <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
             </button>
-            <div class="slp-readme slp-loading">Loading...</div>
           </div>
           ${buildLinksHTML()}
         </div>
@@ -528,7 +552,7 @@ export function createSocialPanel(config = {}) {
 
     overlay.querySelector('.slp-modal-copy').addEventListener('click', () => {
       if (!rawMd) return;
-      navigator.clipboard.writeText(rawMd).then(() => {
+      function onCopied() {
         const btn = overlay.querySelector('.slp-modal-copy');
         btn.classList.add('copied');
         btn.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>';
@@ -536,7 +560,14 @@ export function createSocialPanel(config = {}) {
           btn.classList.remove('copied');
           btn.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
         }, 2000);
-      });
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(rawMd).then(onCopied).catch(() => {
+          fallbackCopy(rawMd) && onCopied();
+        });
+      } else {
+        fallbackCopy(rawMd) && onCopied();
+      }
     });
     overlay.querySelector('.slp-modal-close').addEventListener('click', closeModal);
     overlay.addEventListener('click', (e) => {
