@@ -5,19 +5,36 @@ Lightweight, zero-dependency module that adds a social links bar + rendered READ
 ## Install
 
 ```bash
-bun add social-links-panel
-# or
 npm install social-links-panel
 ```
 
-Or as a local package:
+Or from GitHub:
 
 ```json
 {
   "dependencies": {
-    "social-links-panel": "file:../packages/social-links-panel"
+    "social-links-panel": "github:weberBen/social-links-panel"
   }
 }
+```
+
+### Local development
+
+To use a local copy of the package instead of the GitHub version:
+
+```bash
+# In the social-links-panel directory
+npm link
+
+# In the consuming project
+npm link social-links-panel
+```
+
+This creates a symlink to the local package. `package.json` stays unchanged (still points to GitHub). To revert:
+
+```bash
+npm unlink social-links-panel
+npm install
 ```
 
 ## Quick Start
@@ -173,8 +190,8 @@ Use the following instructions when integrating this module into a new project w
 Install and configure social-links-panel in this project:
 
 1. Add the dependency:
-   - If a local package exists: "social-links-panel": "file:../packages/social-links-panel"
-   - Otherwise: bun add social-links-panel (or npm install)
+   npm install social-links-panel
+   (or add "social-links-panel": "github:weberBen/social-links-panel" in package.json)
 
 2. Create a social.config.js file with:
    - GitHub link (user/repo)
