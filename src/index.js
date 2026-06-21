@@ -2,6 +2,21 @@ import { ICONS, DEFAULT_LABELS } from './icons.js';
 import { renderMarkdown, fetchMarkdown } from './markdown.js';
 import Lenis from 'lenis';
 
+/**
+ * Resolve a potentially localized value.
+ * Accepts a plain string or an object like { fr: '...', en: '...' }.
+ * Returns the value for `locale`, or the first non-empty value as fallback.
+ */
+function loc(val, locale) {
+  if (val == null) return '';
+  if (typeof val !== 'object') return val;
+  if (locale && val[locale]) return val[locale];
+  for (const v of Object.values(val)) {
+    if (v) return v;
+  }
+  return '';
+}
+
 let styleInjected = false;
 
 const CSS = `
@@ -417,7 +432,7 @@ function injectStyles() {
 export function createSocialPanel(config = {}) {
   injectStyles();
 
-  const { links = [], readme, content, theme = 'auto', toolbar = true, nav = [], onOpen, onClose } = config;
+  const { links = [], readme, content, theme = 'auto', toolbar = true, nav = [], onOpen, onClose, locale } = config;
   let modalConfig = config.modal || 'light';
 
   const MODAL_PRESETS = {
@@ -440,8 +455,8 @@ export function createSocialPanel(config = {}) {
   function buildSocialSectionMd() {
     const lines = ['\n---\n\n## Social\n\n'];
     for (const link of links) {
-      const label = link.label || DEFAULT_LABELS[link.type] || link.type;
-      const desc = link.desc || '';
+      const label = loc(link.label, locale) || DEFAULT_LABELS[link.type] || link.type;
+      const desc = loc(link.desc, locale);
       const href = link.type === 'email' ? `mailto:${link.url}` : link.url;
       if (desc) {
         lines.push(`- ${desc} — [see here](${href})\n`);
@@ -456,9 +471,9 @@ export function createSocialPanel(config = {}) {
     if (links.length === 0) return '';
     const items = links.map(link => {
       const icon = ICONS[link.type] || ICONS.website;
-      const label = link.label || DEFAULT_LABELS[link.type] || link.type;
+      const label = loc(link.label, locale) || DEFAULT_LABELS[link.type] || link.type;
       const href = link.type === 'email' ? `mailto:${link.url}` : link.url;
-      const aria = link.aria || label;
+      const aria = loc(link.aria, locale) || label;
       return `<a class="slp-link" href="${href}" target="_blank" rel="noopener" aria-label="${aria}" title="${aria}">${icon}<span>${label}</span></a>`;
     }).join('');
     return `<div class="slp-links">${items}</div>`;
@@ -487,7 +502,7 @@ export function createSocialPanel(config = {}) {
     overlay.innerHTML = `
       <div class="slp-modal">
         <div class="slp-modal-header">
-          <span class="slp-modal-title">${readme?.label || 'INFO : README'}</span>
+          <span class="slp-modal-title">${loc(readme?.label, locale) || 'INFO : README'}</span>
           ${buildLinksHTML()}
           <div class="slp-modal-actions">
             <button class="slp-modal-close">&times;</button>
@@ -618,7 +633,7 @@ export function createSocialPanel(config = {}) {
     } else if (readme) {
       const toggleBtn = document.createElement('button');
       toggleBtn.className = 'slp-readme-toggle';
-      toggleBtn.innerHTML = `<span>${readme.label || 'INFO : README'}</span>`;
+      toggleBtn.innerHTML = `<span>${loc(readme.label, locale) || 'INFO : README'}</span>`;
       toggleBtn.addEventListener('click', openModal);
       root.appendChild(toggleBtn);
     }
@@ -696,7 +711,7 @@ export function createSocialPanel(config = {}) {
           a.href = link.type === 'email' ? `mailto:${link.url}` : link.url;
           a.target = '_blank';
           a.rel = 'noopener';
-          const ariaText = link.aria || link.label || DEFAULT_LABELS[link.type] || link.type;
+          const ariaText = loc(link.aria, locale) || loc(link.label, locale) || DEFAULT_LABELS[link.type] || link.type;
           a.title = ariaText;
           a.setAttribute('aria-label', ariaText);
           a.innerHTML = icon;
@@ -715,7 +730,7 @@ export function createSocialPanel(config = {}) {
         const btn = document.createElement('button');
         btn.className = className;
         btn.id = `slp-nav-${item.key}`;
-        btn.textContent = item.label;
+        btn.textContent = loc(item.label, locale);
         if (item.action === 'modal') {
           btn.addEventListener('click', () => openModal());
         } else if (item.action) {
