@@ -148,6 +148,61 @@ const CSS = `
   60% { opacity: 1; transform: scale(1.5); }
 }
 
+/* Activity in modal header */
+.slp-modal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.slp-activity-range {
+  width: 100%;
+  order: 1;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--slp-text-muted);
+  margin-top: 2px;
+}
+.slp-activity-arrow {
+  display: none;
+}
+.slp-activity-date {
+  font-weight: 500;
+}
+.slp-activity-status {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+.slp-activity-status.loading {
+  background: rgba(148,163,184,0.15);
+  color: var(--slp-text-muted);
+  animation: slpStatusPulse 1.5s ease-in-out infinite;
+}
+.slp-activity-status.active {
+  background: rgba(52,211,153,0.15);
+  color: #34d399;
+  border: 1px solid rgba(52,211,153,0.3);
+}
+.slp-activity-status.recent {
+  background: rgba(251,191,36,0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251,191,36,0.3);
+}
+.slp-activity-status.inactive {
+  background: rgba(239,68,68,0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239,68,68,0.3);
+}
+@keyframes slpStatusPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 /* README toggle button */
 .slp-readme-toggle {
   display: flex;
@@ -444,7 +499,7 @@ function injectStyles() {
 export function createSocialPanel(config = {}) {
   injectStyles();
 
-  const { links = [], readme, content, theme = 'auto', toolbar = true, nav = [], onOpen, onClose, locale } = config;
+  const { links = [], readme, content, theme = 'auto', toolbar = true, nav = [], onOpen, onClose, locale, firstCommitDate } = config;
   let modalConfig = config.modal || 'light';
 
   const MODAL_PRESETS = {
@@ -526,7 +581,11 @@ export function createSocialPanel(config = {}) {
     overlay.innerHTML = `
       <div class="slp-modal">
         <div class="slp-modal-header">
-          <span class="slp-modal-title">${loc(readme?.label, locale) || 'INFO : README'}</span>
+          <div class="slp-modal-title-row">
+            <span class="slp-modal-title">${loc(readme?.label, locale) || 'INFO : README'}</span>
+            ${buildActivityStatusHTML()}
+          </div>
+          ${buildActivityDatesHTML()}
           ${buildLinksHTML()}
           <div class="slp-modal-actions">
             <button class="slp-modal-close">&times;</button>
@@ -633,6 +692,22 @@ export function createSocialPanel(config = {}) {
     if (overlay) overlay.classList.remove('open');
     document.body.style.overflow = '';
     if (onClose) onClose();
+  }
+
+  function fmtDate(str) {
+    const d = new Date(str);
+    const loc2 = locale === 'fr' ? 'fr-FR' : 'en-US';
+    return d.toLocaleDateString(loc2, { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  function buildActivityStatusHTML() {
+    if (!firstCommitDate) return '';
+    return `<span class="slp-activity-status" style="display:none"></span>`;
+  }
+
+  function buildActivityDatesHTML() {
+    if (!firstCommitDate) return '';
+    return `<div class="slp-activity-range">${fmtDate(firstCommitDate)}<span class="slp-activity-arrow"> → </span><span class="slp-activity-date"></span></div>`;
   }
 
   function buildRoot() {
