@@ -697,7 +697,7 @@ export function createSocialPanel(config = {}) {
   function fmtDate(str) {
     const d = new Date(str);
     const loc2 = locale === 'fr' ? 'fr-FR' : 'en-US';
-    return d.toLocaleDateString(loc2, { day: 'numeric', month: 'short', year: 'numeric' });
+    return d.toLocaleDateString(loc2, { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
   function buildActivityStatusHTML() {
